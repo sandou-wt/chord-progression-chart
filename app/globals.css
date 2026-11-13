@@ -443,3 +443,12 @@ table.chart button.row-play {
 }
 
 .print-only { display: none; }
+
+.footer-credit {
+  max-width: 1100px;
+  margin: 0.5rem auto 0;
+  padding: 0 1rem;
+  font-size: 0.75rem;
+  color: rgba(246, 241, 232, 0.72);
+}
+.site-footer .footer-credit a { color: inherit; text-decoration: underline; }

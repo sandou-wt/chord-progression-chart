@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { MAJOR_KEYS, MINOR_KEYS, displayKey, transposeKey, bluesBars, BLUES_FORMS } from "@/lib/theory";
-import { playChordTones, playProgression, stopPlayback } from "@/lib/audio";
+import { playChordTones, playProgression, stopPlayback, guitarReady } from "@/lib/audio";
 
 export default function BluesTool({ defaultForm = "standard" }) {
   const [formId, setFormId] = useState(defaultForm);
@@ -11,6 +11,7 @@ export default function BluesTool({ defaultForm = "standard" }) {
   const [tonic, setTonic] = useState(isMinor ? "A" : "C");
   const [activeIndex, setActiveIndex] = useState(-1);
   const [playing, setPlaying] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const bars = useMemo(() => bluesBars(tonic, formId), [tonic, formId]);
 
@@ -42,22 +43,37 @@ export default function BluesTool({ defaultForm = "standard" }) {
     stopPlayback();
     setPlaying(true);
     setActiveIndex(0);
-    await playProgression(bars, {
-      beat: 2.0,
-      style: "shuffle",
-      onIndex: setActiveIndex,
-      onEnd: () => {
-        setPlaying(false);
-        setActiveIndex(-1);
-      },
-    });
+    if (!guitarReady()) setLoading(true);
+    try {
+      await playProgression(bars, {
+        beat: 2.0,
+        style: "shuffle",
+        onIndex: setActiveIndex,
+        onEnd: () => {
+          setPlaying(false);
+          setActiveIndex(-1);
+        },
+      });
+    } catch {
+      setPlaying(false);
+      setActiveIndex(-1);
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function playOne(chord, i) {
     stopPlayback();
     setPlaying(false);
     setActiveIndex(i);
-    await playChordTones(chord.tones);
+    if (!guitarReady()) setLoading(true);
+    try {
+      await playChordTones(chord.tones, chord);
+    } catch {
+      /* samples failed to load */
+    } finally {
+      setLoading(false);
+    }
   }
 
   const uniqueNumerals = [...new Set(BLUES_FORMS[formId].bars)];
@@ -116,7 +132,7 @@ export default function BluesTool({ defaultForm = "standard" }) {
 
       <div className="button-row no-print">
         <button type="button" onClick={playing ? stop : playCurrent}>
-          {playing ? "Stop" : "Play 12-bar progression"}
+          {loading ? "Loading guitar…" : playing ? "Stop" : "Play 12-bar progression"}
         </button>
         <button type="button" className="secondary" onClick={() => transpose(-1)}>
           Transpose down

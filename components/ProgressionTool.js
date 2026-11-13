@@ -15,6 +15,7 @@ import {
   stopPlayback,
   PLAY_STYLES,
   DEFAULT_PLAY_STYLE,
+  guitarReady,
 } from "@/lib/audio";
 
 const PLAY_STYLE_KEY = "cpc-play-style";
@@ -41,6 +42,7 @@ export default function ProgressionTool({
   const [activeIndex, setActiveIndex] = useState(-1);
   const [playing, setPlaying] = useState(false);
   const [playStyle, setPlayStyle] = useState(DEFAULT_PLAY_STYLE);
+  const [loading, setLoading] = useState(false);
   const lastPlayed = useRef(null);
 
   useEffect(() => {
@@ -99,15 +101,23 @@ export default function ProgressionTool({
     stopPlayback();
     setPlaying(true);
     setActiveIndex(0);
-    await playProgression(list, {
-      style,
-      tempoScale: list.length > 6 ? 1.15 : 1,
-      onIndex: setActiveIndex,
-      onEnd: () => {
-        setPlaying(false);
-        setActiveIndex(-1);
-      },
-    });
+    if (!guitarReady()) setLoading(true);
+    try {
+      await playProgression(list, {
+        style,
+        tempoScale: list.length > 6 ? 1.15 : 1,
+        onIndex: setActiveIndex,
+        onEnd: () => {
+          setPlaying(false);
+          setActiveIndex(-1);
+        },
+      });
+    } catch {
+      setPlaying(false);
+      setActiveIndex(-1);
+    } finally {
+      setLoading(false);
+    }
   }
 
   function playCurrent() {
@@ -128,7 +138,14 @@ export default function ProgressionTool({
     stopPlayback();
     setPlaying(false);
     setActiveIndex(i);
-    await playChordTones(chord.tones, chord);
+    if (!guitarReady()) setLoading(true);
+    try {
+      await playChordTones(chord.tones, chord);
+    } catch {
+      /* samples failed to load */
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function playRow(p) {
@@ -253,7 +270,7 @@ export default function ProgressionTool({
 
       <div className="button-row no-print">
         <button type="button" onClick={playing ? stop : playCurrent}>
-          {playing ? "Stop" : "Play progression"}
+          {loading ? "Loading guitar…" : playing ? "Stop" : "Play progression"}
         </button>
         <button type="button" className="secondary" onClick={() => transpose(-1)}>
           Transpose down

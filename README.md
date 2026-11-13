@@ -27,3 +27,14 @@ Canonical URLs and `sitemap.xml` / `robots.txt` use the placeholder origin
 ## Stack
 
 Next.js 14 App Router with `output: "export"`. No external APIs, no account required.
+
+
+## Audio credits
+
+Playback uses recorded steel-string acoustic guitar notes, self-hosted in
+`public/samples/guitar/` and loaded on first play (about 0.6 MB). They come from the
+"guitar-acoustic" set in [nbrosowsky/tonejs-instruments](https://github.com/nbrosowsky/tonejs-instruments),
+originally from the University of Iowa Electronic Music Studios Musical Instrument
+Samples, licensed [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/). Changes:
+12 notes selected (E2 to C5), trimmed with a fade-out, loudness-matched, re-encoded to
+mono MP3. Other pitches are made by resampling the nearest note.

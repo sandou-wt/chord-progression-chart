@@ -13,6 +13,17 @@ export default function Footer() {
           <Link href="/circle-of-fifths-chord-progression/">Circle of fifths</Link>
         </span>
       </div>
+      <p className="footer-credit">
+        Guitar sounds: University of Iowa Electronic Music Studios samples, edited by{" "}
+        <a href="https://github.com/nbrosowsky/tonejs-instruments" rel="noopener">
+          nbrosowsky/tonejs-instruments
+        </a>{" "}
+        (
+        <a href="https://creativecommons.org/licenses/by/3.0/" rel="license noopener">
+          CC BY 3.0
+        </a>
+        ), trimmed and re-encoded.
+      </p>
     </footer>
   );
 }

@@ -1,0 +1,10 @@
+Guitar samples (public/samples/guitar/*.mp3)
+
+Source: "guitar-acoustic" samples from nbrosowsky/tonejs-instruments
+  https://github.com/nbrosowsky/tonejs-instruments
+  originally from the University of Iowa Electronic Music Studios
+  Musical Instrument Samples (https://theremin.music.uiowa.edu/MIS.html).
+License: Creative Commons Attribution 3.0 (CC BY 3.0)
+  https://creativecommons.org/licenses/by/3.0/
+Changes: 12 notes selected (E2-C5, file names are MIDI note numbers), trimmed to
+3.4-4 s with a fade-out, loudness-matched, converted to mono 112 kbps MP3.
