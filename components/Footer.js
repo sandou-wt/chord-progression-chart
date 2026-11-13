@@ -14,7 +14,8 @@ export default function Footer() {
         </span>
       </div>
       <p className="footer-credit">
-        Guitar sounds: University of Iowa Electronic Music Studios samples, edited by{" "}
+        Guitar sounds: University of Iowa Electronic Music Studios (steel string) and
+        quartertone on Freesound (nylon string, used for melodies), edited by{" "}
         <a href="https://github.com/nbrosowsky/tonejs-instruments" rel="noopener">
           nbrosowsky/tonejs-instruments
         </a>{" "}

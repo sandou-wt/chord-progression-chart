@@ -38,3 +38,9 @@ originally from the University of Iowa Electronic Music Studios Musical Instrume
 Samples, licensed [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/). Changes:
 12 notes selected (E2 to C5), trimmed with a fade-out, loudness-matched, re-encoded to
 mono MP3. Other pitches are made by resampling the nearest note.
+
+Example-phrase melodies use nylon-string guitar notes in `public/samples/lead/` (about
+0.37 MB, loaded only when a phrase is played): the "guitar-nylon" set from the same
+repository, originally the Freesound pack "classicalguitar-multisampled" by
+[quartertone](https://freesound.org/people/quartertone/packs/11573/), CC BY 3.0.
+Same edits as above.
