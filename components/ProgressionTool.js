@@ -80,7 +80,7 @@ export default function ProgressionTool({
     setPlaying(true);
     setActiveIndex(0);
     await playProgression(chords, {
-      beat: selected?.numerals.length > 6 ? 0.55 : 0.75,
+      beat: selected?.numerals.length > 6 ? 1.25 : 1.6,
       onIndex: setActiveIndex,
       onEnd: () => {
         setPlaying(false);
@@ -103,7 +103,7 @@ export default function ProgressionTool({
     setPlaying(true);
     setActiveIndex(0);
     await playProgression(rowChords, {
-      beat: p.numerals.length > 6 ? 0.55 : 0.75,
+      beat: p.numerals.length > 6 ? 1.25 : 1.6,
       onIndex: setActiveIndex,
       onEnd: () => {
         setPlaying(false);
