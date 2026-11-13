@@ -20,6 +20,8 @@ import {
 
 const PLAY_STYLE_KEY = "cpc-play-style";
 import CircleGraphic from "./CircleGraphic";
+import TheoryPanel from "./TheoryPanel";
+import { MELODIES } from "@/lib/melodies";
 
 function qualityClass(quality) {
   if (quality === "minor" || quality === "m7" || quality === "halfdim7") return "q-minor";
@@ -44,6 +46,16 @@ export default function ProgressionTool({
   const [playStyle, setPlayStyle] = useState(DEFAULT_PLAY_STYLE);
   const [loading, setLoading] = useState(false);
   const lastPlayed = useRef(null);
+
+  useEffect(() => {
+    const reset = () => {
+      setPlaying(false);
+      setActiveIndex(-1);
+      setLoading(false);
+    };
+    window.addEventListener("cpc-audio-stop", reset);
+    return () => window.removeEventListener("cpc-audio-stop", reset);
+  }, []);
 
   useEffect(() => {
     try {
@@ -98,20 +110,22 @@ export default function ProgressionTool({
 
   async function startPlayback(list, style = playStyle) {
     lastPlayed.current = list;
-    stopPlayback();
+    // playProgression stops any other playback synchronously (firing the stop
+    // event), so set our own "playing" state after calling it.
+    const promise = playProgression(list, {
+      style,
+      tempoScale: list.length > 6 ? 1.15 : 1,
+      onIndex: setActiveIndex,
+      onEnd: () => {
+        setPlaying(false);
+        setActiveIndex(-1);
+      },
+    });
     setPlaying(true);
     setActiveIndex(0);
     if (!guitarReady()) setLoading(true);
     try {
-      await playProgression(list, {
-        style,
-        tempoScale: list.length > 6 ? 1.15 : 1,
-        onIndex: setActiveIndex,
-        onEnd: () => {
-          setPlaying(false);
-          setActiveIndex(-1);
-        },
-      });
+      await promise;
     } catch {
       setPlaying(false);
       setActiveIndex(-1);
@@ -135,12 +149,11 @@ export default function ProgressionTool({
   }
 
   async function playOne(chord, i) {
-    stopPlayback();
-    setPlaying(false);
+    const promise = playChordTones(chord.tones, chord);
     setActiveIndex(i);
     if (!guitarReady()) setLoading(true);
     try {
-      await playChordTones(chord.tones, chord);
+      await promise;
     } catch {
       /* samples failed to load */
     } finally {
@@ -282,6 +295,19 @@ export default function ProgressionTool({
           Print chart
         </button>
       </div>
+
+      {selected && (
+        <TheoryPanel
+          context={mode}
+          mode={mode}
+          tonic={tonic}
+          numerals={selected.numerals}
+          notesId={selected.id}
+          melodies={MELODIES[selected.id]}
+          activeIndex={activeIndex}
+          onChordClick={(chord, i) => playOne(chord, i)}
+        />
+      )}
 
       <h2 style={{ marginTop: "1.5rem" }}>Common chord progressions in this key</h2>
       <div className="table-wrap">

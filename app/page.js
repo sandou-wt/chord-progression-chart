@@ -4,6 +4,8 @@ import ProgressionTool from "@/components/ProgressionTool";
 import StaticChart from "@/components/StaticChart";
 import { canonicalPath } from "@/lib/config";
 import Link from "next/link";
+import Faq from "@/components/Faq";
+import { HOME_FAQ } from "@/lib/faq";
 
 export const metadata = {
   title: "Chord Progression Chart: All 12 Keys (Free & Interactive)",
@@ -84,35 +86,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="faq">
-          <h2>Questions</h2>
-          <details>
-            <summary>How do I read the Roman numerals?</summary>
-            <p>
-              The numeral is the scale degree the chord is built on. In C major,
-              I is C, ii is Dm, iii is Em, IV is F, V is G, vi is Am, and vii° is
-              B°. In a minor key the pattern starts from i, so in A minor, i is
-              Am and VII is G. A capital V in a minor progression is the major
-              dominant (E in A minor), borrowed from harmonic minor.
-            </p>
-          </details>
-          <details>
-            <summary>Can I print this chart?</summary>
-            <p>
-              Yes. Use the Print chart button, or your browser’s print dialog,
-              to save a clean page with the tables and without the navigation.
-              You can also print to PDF from the same dialog.
-            </p>
-          </details>
-          <details>
-            <summary>Does this work for guitar and piano?</summary>
-            <p>
-              Yes. The chord names are the same on both instruments. Guitar and
-              piano diagrams are planned for a later version; v1 focuses on the
-              chart, playback, and transposition.
-            </p>
-          </details>
-        </section>
+        <Faq items={HOME_FAQ} />
       </main>
       <Footer />
     </>

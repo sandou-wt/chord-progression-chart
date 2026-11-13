@@ -1,8 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MAJOR_KEYS, MINOR_KEYS, displayKey, transposeKey, bluesBars, BLUES_FORMS } from "@/lib/theory";
 import { playChordTones, playProgression, stopPlayback, guitarReady } from "@/lib/audio";
+import TheoryPanel from "./TheoryPanel";
+import { BLUES_MELODIES } from "@/lib/melodies";
 
 export default function BluesTool({ defaultForm = "standard" }) {
   const [formId, setFormId] = useState(defaultForm);
@@ -14,6 +16,16 @@ export default function BluesTool({ defaultForm = "standard" }) {
   const [loading, setLoading] = useState(false);
 
   const bars = useMemo(() => bluesBars(tonic, formId), [tonic, formId]);
+
+  useEffect(() => {
+    const reset = () => {
+      setPlaying(false);
+      setActiveIndex(-1);
+      setLoading(false);
+    };
+    window.addEventListener("cpc-audio-stop", reset);
+    return () => window.removeEventListener("cpc-audio-stop", reset);
+  }, []);
 
   function stop() {
     stopPlayback();
@@ -40,20 +52,20 @@ export default function BluesTool({ defaultForm = "standard" }) {
   }
 
   async function playCurrent() {
-    stopPlayback();
+    const promise = playProgression(bars, {
+      beat: 2.0,
+      style: "shuffle",
+      onIndex: setActiveIndex,
+      onEnd: () => {
+        setPlaying(false);
+        setActiveIndex(-1);
+      },
+    });
     setPlaying(true);
     setActiveIndex(0);
     if (!guitarReady()) setLoading(true);
     try {
-      await playProgression(bars, {
-        beat: 2.0,
-        style: "shuffle",
-        onIndex: setActiveIndex,
-        onEnd: () => {
-          setPlaying(false);
-          setActiveIndex(-1);
-        },
-      });
+      await promise;
     } catch {
       setPlaying(false);
       setActiveIndex(-1);
@@ -63,12 +75,11 @@ export default function BluesTool({ defaultForm = "standard" }) {
   }
 
   async function playOne(chord, i) {
-    stopPlayback();
-    setPlaying(false);
+    const promise = playChordTones(chord.tones, chord);
     setActiveIndex(i);
     if (!guitarReady()) setLoading(true);
     try {
-      await playChordTones(chord.tones, chord);
+      await promise;
     } catch {
       /* samples failed to load */
     } finally {
@@ -144,6 +155,19 @@ export default function BluesTool({ defaultForm = "standard" }) {
           Print chart
         </button>
       </div>
+
+      <TheoryPanel
+        context="blues"
+        mode={isMinor ? "minor" : "major"}
+        tonic={tonic}
+        numerals={BLUES_FORMS[formId].bars}
+        notesId="blues"
+        melodies={BLUES_MELODIES[formId]}
+        phraseStyle="shuffle"
+        activeIndex={activeIndex}
+        uniqueCards
+        onChordClick={(chord) => playOne(chord, bars.findIndex((b) => b.numeral === chord.numeral))}
+      />
     </div>
   );
 }

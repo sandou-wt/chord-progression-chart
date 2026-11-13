@@ -4,6 +4,8 @@ import ProgressionTool from "@/components/ProgressionTool";
 import { canonicalPath } from "@/lib/config";
 import { chartMatrix, MAJOR_PROGRESSIONS, MINOR_PROGRESSIONS } from "@/lib/theory";
 import Link from "next/link";
+import Faq from "@/components/Faq";
+import { CIRCLE_FAQ } from "@/lib/faq";
 
 export const metadata = {
   title: "Circle of Fifths Chord Progression Chart",
@@ -125,6 +127,7 @@ export default function CirclePage() {
           </Link>
           .
         </p>
+        <Faq items={CIRCLE_FAQ} />
       </main>
       <Footer />
     </>

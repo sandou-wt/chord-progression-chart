@@ -452,3 +452,59 @@ table.chart button.row-play {
   color: rgba(246, 241, 232, 0.72);
 }
 .site-footer .footer-credit a { color: inherit; text-decoration: underline; }
+
+/* ---- Theory panel: chord cards, why, songs, phrases ---- */
+.theory { margin-top: 1.5rem; }
+.theory-block { margin: 0 0 1.6rem; }
+.theory-block h2 { margin-bottom: 0.4rem; }
+.theory-hint { color: var(--muted); font-size: 0.9rem; margin: 0 0 0.8rem; }
+
+.chord-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 0.6rem;
+}
+
+button.chord-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.3rem;
+  text-align: left;
+  background: var(--card);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  border-left: 5px solid var(--navy);
+  border-radius: 10px;
+  padding: 0.7rem 0.8rem;
+  font-weight: 400;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+button.chord-card:hover { background: var(--paper-2); }
+button.chord-card.is-active { background: var(--highlight); box-shadow: 0 0 0 2px var(--rust) inset; }
+.chord-card.fn-tonic { border-left-color: var(--navy); }
+.chord-card.fn-predominant { border-left-color: #3f6e4a; }
+.chord-card.fn-dominant { border-left-color: var(--rust); }
+.chord-card.fn-colour { border-left-color: #7a5a8c; }
+.cc-top { display: flex; align-items: baseline; gap: 0.5rem; }
+.cc-numeral { font-family: var(--serif); font-size: 1.25rem; font-weight: 700; }
+.cc-name { font-family: var(--serif); font-size: 1.05rem; color: var(--muted); }
+.cc-fn { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+.cc-tag { font-weight: 650; font-size: 0.95rem; }
+.cc-note { font-size: 0.86rem; color: var(--muted); line-height: 1.4; }
+
+table.chart.songs td, table.chart.songs th { font-size: 0.95rem; }
+
+.phrases { display: grid; gap: 0.7rem; }
+.phrase {
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 0.75rem 0.9rem;
+  background: var(--card);
+}
+.phrase.is-playing { background: var(--highlight); }
+.phrase-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+.phrase-head h3 { margin: 0; font-size: 1.05rem; }
+.phrase-head button { padding: 0.35rem 0.8rem; font-size: 0.9rem; }
+.phrase-notes { font-family: var(--mono); font-size: 0.88rem; margin: 0.45rem 0 0.3rem; color: var(--navy); overflow-wrap: anywhere; }
+.phrase-why { margin: 0; color: var(--muted); font-size: 0.92rem; }

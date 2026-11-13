@@ -4,6 +4,8 @@ import BluesTool from "@/components/BluesTool";
 import { canonicalPath } from "@/lib/config";
 import { bluesBars, MAJOR_KEYS } from "@/lib/theory";
 import Link from "next/link";
+import Faq from "@/components/Faq";
+import { BLUES_FAQ } from "@/lib/faq";
 
 export const metadata = {
   title: "12 Bar Blues Chord Progression Chart (All Keys)",
@@ -124,6 +126,7 @@ export default function BluesPage() {
           </Link>
           .
         </p>
+        <Faq items={BLUES_FAQ} />
       </main>
       <Footer />
     </>
