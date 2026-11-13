@@ -174,6 +174,46 @@ button:disabled { opacity: 0.55; cursor: default; }
   align-items: center;
 }
 
+.play-styles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.7rem;
+  margin: 0 0 0.75rem;
+}
+
+.play-styles-label {
+  font-size: 0.75rem;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.play-styles-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+button.play-style {
+  background: #fff;
+  color: var(--navy);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+button.play-style:hover { background: var(--paper-2); }
+
+button.play-style.is-on {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: #fff;
+}
+
 .now-playing {
   margin: 0.25rem 0 1rem;
   padding: 0.9rem 1rem;

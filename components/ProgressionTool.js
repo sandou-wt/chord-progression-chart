@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   keysFor,
   progressionsFor,
@@ -9,7 +9,15 @@ import {
   displayKey,
   transposeKey,
 } from "@/lib/theory";
-import { playChordTones, playProgression, stopPlayback } from "@/lib/audio";
+import {
+  playChordTones,
+  playProgression,
+  stopPlayback,
+  PLAY_STYLES,
+  DEFAULT_PLAY_STYLE,
+} from "@/lib/audio";
+
+const PLAY_STYLE_KEY = "cpc-play-style";
 import CircleGraphic from "./CircleGraphic";
 
 function qualityClass(quality) {
@@ -32,6 +40,17 @@ export default function ProgressionTool({
   const [styleId, setStyleId] = useState(defaultStyleId || null);
   const [activeIndex, setActiveIndex] = useState(-1);
   const [playing, setPlaying] = useState(false);
+  const [playStyle, setPlayStyle] = useState(DEFAULT_PLAY_STYLE);
+  const lastPlayed = useRef(null);
+
+  useEffect(() => {
+    try {
+      const saved = window.localStorage.getItem(PLAY_STYLE_KEY);
+      if (saved && PLAY_STYLES.some((p) => p.id === saved)) setPlayStyle(saved);
+    } catch {
+      /* storage unavailable */
+    }
+  }, []);
 
   const allStyles = progressionsFor(mode);
   const styles = allowedIds ? allStyles.filter((p) => allowedIds.includes(p.id)) : allStyles;
@@ -75,41 +94,47 @@ export default function ProgressionTool({
     onTonic(transposeKey(tonic, mode, semitones));
   }
 
-  async function playCurrent() {
+  async function startPlayback(list, style = playStyle) {
+    lastPlayed.current = list;
     stopPlayback();
     setPlaying(true);
     setActiveIndex(0);
-    await playProgression(chords, {
-      beat: selected?.numerals.length > 6 ? 1.6 : 2.0,
+    await playProgression(list, {
+      style,
+      tempoScale: list.length > 6 ? 1.15 : 1,
       onIndex: setActiveIndex,
       onEnd: () => {
         setPlaying(false);
         setActiveIndex(-1);
       },
     });
+  }
+
+  function playCurrent() {
+    return startPlayback(chords);
+  }
+
+  function onPlayStyle(next) {
+    setPlayStyle(next);
+    try {
+      window.localStorage.setItem(PLAY_STYLE_KEY, next);
+    } catch {
+      /* storage unavailable */
+    }
+    if (playing && lastPlayed.current) startPlayback(lastPlayed.current, next);
   }
 
   async function playOne(chord, i) {
     stopPlayback();
     setPlaying(false);
     setActiveIndex(i);
-    await playChordTones(chord.tones);
+    await playChordTones(chord.tones, chord);
   }
 
   async function playRow(p) {
     const rowChords = progressionChords(tonic, mode, p.numerals);
     setStyleId(p.id);
-    stopPlayback();
-    setPlaying(true);
-    setActiveIndex(0);
-    await playProgression(rowChords, {
-      beat: p.numerals.length > 6 ? 1.6 : 2.0,
-      onIndex: setActiveIndex,
-      onEnd: () => {
-        setPlaying(false);
-        setActiveIndex(-1);
-      },
-    });
+    await startPlayback(rowChords);
   }
 
   return (
@@ -204,6 +229,26 @@ export default function ProgressionTool({
             {selected.blurb}
           </p>
         )}
+      </div>
+
+      <div className="play-styles no-print" role="group" aria-labelledby="play-style-label">
+        <span id="play-style-label" className="play-styles-label">
+          Playing style
+        </span>
+        <div className="play-styles-options">
+          {PLAY_STYLES.map((ps) => (
+            <button
+              key={ps.id}
+              type="button"
+              className={`play-style ${playStyle === ps.id ? "is-on" : ""}`}
+              aria-pressed={playStyle === ps.id}
+              title={ps.hint}
+              onClick={() => onPlayStyle(ps.id)}
+            >
+              {ps.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="button-row no-print">
