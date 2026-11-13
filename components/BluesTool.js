@@ -43,7 +43,8 @@ export default function BluesTool({ defaultForm = "standard" }) {
     setPlaying(true);
     setActiveIndex(0);
     await playProgression(bars, {
-      beat: 1.6,
+      beat: 2.0,
+      style: "shuffle",
       onIndex: setActiveIndex,
       onEnd: () => {
         setPlaying(false);
