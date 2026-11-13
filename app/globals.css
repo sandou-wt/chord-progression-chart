@@ -357,6 +357,9 @@ table.chart button.row-play {
 .bar .n { display: block; color: var(--muted); font-size: 0.75rem; }
 .bar .c { font-family: var(--serif); font-size: 1.25rem; font-weight: 700; }
 .bar.is-active { background: var(--highlight); border-color: var(--rust); }
+button.bar { color: var(--ink); font-weight: 400; }
+button.bar:hover { background: var(--paper-2); }
+button.bar.is-active, button.bar.is-active:hover { background: var(--highlight); }
 .bar-num { display: block; font-size: 0.68rem; color: var(--muted); margin-bottom: 0.15rem; }
 
 .prose { max-width: 42rem; }
